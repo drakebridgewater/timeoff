@@ -119,7 +119,7 @@ const csvCell = (v) => {
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 };
 
-export function createApp({ dbFile = ":memory:", trustUserHeader = true, version = "dev", authUrl = "https://auth.bridgewater.digital" } = {}) {
+export function createApp({ dbFile = ":memory:", trustUserHeader = true, version = "dev", authUrl = "https://authelia.bridgewater.digital" } = {}) {
   const db = openDb(dbFile);
 
   async function api(req, res, url) {
@@ -266,7 +266,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     dbFile: process.env.DB_FILE || "data/timeoff.sqlite",
     trustUserHeader: process.env.TRUST_USER_HEADER !== "false",
     version: process.env.APP_VERSION || "dev",
-    authUrl: process.env.AUTH_URL || "https://auth.bridgewater.digital",
+    authUrl: process.env.AUTH_URL || "https://authelia.bridgewater.digital",
   });
   const server = createServer(app.handler);
   server.listen(port, host, () => console.log(`Time off on http://${host}:${port}`));

@@ -20,7 +20,7 @@ services:
       # The header shows the Authelia user from the Remote-User header.
       # Set to false if this container is ever reachable without Authelia in front.
       TRUST_USER_HEADER: ${TRUST_USER_HEADER:-true}
-      AUTH_URL: ${AUTH_URL:-https://auth.bridgewater.digital}
+      AUTH_URL: ${AUTH_URL:-https://authelia.bridgewater.digital}
     volumes:
       - ${APPDATA:-/mnt/user/appdata/timeoff}:/data   # timeoff.sqlite: every day off
     networks:
