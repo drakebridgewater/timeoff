@@ -1,0 +1,27 @@
+# Optional: let Sablier stop Time off after 30 idle minutes and start it on the next visit.
+# Add this file to the stack after docker-compose.yml:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.sablier.yml up -d
+#
+# Before it works, Traefik needs (once, for every app that uses Sablier):
+#   1. The Sablier plugin in Traefik's static config:
+#        experimental.plugins.sablier.moduleName: github.com/sablierapp/sablier-traefik-plugin
+#   2. A Sablier container on the proxy network, reachable at SABLIER_URL, with the Docker socket.
+#   3. providers.docker.allowEmptyServices: true, so Traefik keeps this router while the
+#      container is stopped and the request can reach the Sablier middleware.
+# Check these against the Sablier docs for the version you install (sablierapp.dev).
+#
+# Order matters: Authelia runs first, so only signed-in people can wake the container.
+# Homepage's siteMonitor is left out on purpose: it would wake the app every few seconds.
+
+services:
+  timeoff:
+    labels:
+      sablier.enable: "true"
+      sablier.group: timeoff
+      traefik.http.middlewares.timeoff-sablier.plugin.sablier.group: timeoff
+      traefik.http.middlewares.timeoff-sablier.plugin.sablier.sablierUrl: ${SABLIER_URL:-http://sablier:10000}
+      traefik.http.middlewares.timeoff-sablier.plugin.sablier.sessionDuration: ${SABLIER_SESSION:-30m}
+      traefik.http.middlewares.timeoff-sablier.plugin.sablier.dynamic.displayName: Time off
+      traefik.http.middlewares.timeoff-sablier.plugin.sablier.dynamic.showDetails: "false"
+      traefik.http.routers.timeoff.middlewares: ${AUTHELIA_MIDDLEWARE:-default-secure@file},timeoff-sablier@docker

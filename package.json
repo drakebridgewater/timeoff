@@ -1,0 +1,18 @@
+{
+  "name": "timeoff",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Days off work and whether each one is reported to my employer. timeoff.bridgewater.digital",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test \"test/*.test.js\"",
+    "check": "for f in server/*.js scripts/*.js public/js/*.js; do node --check \"$f\" || exit 1; done",
+    "import": "node scripts/import-sheet.js",
+    "sync-brand": "sh scripts/sync-brand.sh"
+  }
+}

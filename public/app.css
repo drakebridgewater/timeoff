@@ -1,0 +1,94 @@
+/* Time off: only what the brand stylesheet does not already cover. Tokens only, no hex. */
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.attn { color: var(--amber-text); }
+.over { color: var(--amber-text); }
+.num { text-align: right; }
+.empty { margin-top: var(--space-5); }
+.note { margin-top: var(--space-5); font: var(--type-small); }
+.form-error { color: var(--red); font: var(--type-small); }
+.form-error[hidden] { display: none; }
+
+/* The one panel on the year page: what is not reported yet. */
+.bw-panel { margin-bottom: var(--space-6); }
+.bw-panel p { max-width: var(--measure); }
+.panel-actions { margin-top: var(--space-4); }
+
+/* ---------- year table ---------- */
+.list-head { align-items: center; margin-bottom: 0; }
+table.entries thead th:last-child, table.entries td.edit { padding-right: 0; text-align: right; }
+table.entries td { vertical-align: middle; }
+table.entries .date { white-space: nowrap; }
+table.entries .hours { width: 4.5rem; }
+table.entries .type { white-space: nowrap; }
+table.entries .reason { overflow-wrap: anywhere; }
+table.entries .reported { white-space: nowrap; }
+.month th { padding-top: var(--space-6); color: var(--ink); border-bottom-color: var(--ink); }
+.month:first-child th { padding-top: var(--space-4); }
+.month__name { font: var(--type-h3); margin-right: var(--space-3); }
+.month .bw-count { font: var(--type-mono-small); }
+.today td { padding-top: var(--space-2); padding-bottom: var(--space-2); border-bottom: var(--rule) solid var(--sig); }
+.report { display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; }
+.report input { width: 18px; height: 18px; margin: 0; accent-color: var(--sig-fill); flex: none; cursor: pointer; }
+.report__word { font: var(--type-mono); }
+.report__word:not(.attn) { color: var(--comment); }
+
+@media (max-width: 559px) {
+  table.entries thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  table.entries tbody tr:not(.month):not(.today) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "date hours" "type type" "reason reason" "reported edit";
+    column-gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: var(--hairline) solid var(--line);
+  }
+  table.entries tbody tr:not(.month):not(.today) td { border: 0; padding: 0; text-align: left; width: auto; }
+  table.entries .date { grid-area: date; }
+  table.entries .hours { grid-area: hours; text-align: right; }
+  table.entries .hours .bw-mono::after { content: " h"; color: var(--comment); }
+  table.entries .type { grid-area: type; }
+  table.entries .reason { grid-area: reason; font: var(--type-small); }
+  table.entries .reason:empty { display: none; }
+  table.entries .reported { grid-area: reported; padding-top: var(--space-2) !important; align-self: center; }
+  table.entries .edit { grid-area: edit; text-align: right !important; padding-top: var(--space-2) !important; }
+  .month, .today { display: block; }
+  .month th, .today td { display: block; }
+}
+
+/* ---------- years table ---------- */
+table.years th[scope="row"] { font-weight: 400; }
+table.years .meter-cell { width: 30%; }
+.meter { position: relative; display: block; height: 8px; background: var(--line); border-radius: var(--radius-sm); }
+.meter__fill { position: absolute; inset: 0 auto 0 0; background: var(--sig-bright); border-radius: var(--radius-sm); }
+.meter__mark { position: absolute; top: -3px; bottom: -3px; width: var(--rule); background: var(--ink); }
+@media (max-width: 559px) { .hide-phone { display: none; } }
+
+/* ---------- settings ---------- */
+.bw-form .form-error { margin-bottom: var(--space-4); }
+.data { margin-top: var(--space-7); }
+.data p + p { margin-top: var(--space-3); }
+
+/* ---------- add and edit dialog ---------- */
+.entry-dialog { width: min(480px, calc(100vw - 2 * var(--space-4))); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); align-items: start; }
+@media (max-width: 559px) { .pair { grid-template-columns: 1fr; } }
+.entry-dialog .bw-dialog__actions [value="delete"] { margin-right: auto; }
+/* What a range will add and skip, under the two dates. */
+.plan { padding: var(--space-3) var(--space-4); background: var(--panel); border-radius: var(--radius-sm); font: var(--type-small); }
+.plan[hidden] { display: none; }
+.plan p + p { margin-top: var(--space-2); }
+.plan__label { font-weight: 500; color: var(--ink); }
+
+/* ---------- toast ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: var(--space-5); transform: translateX(-50%);
+  max-width: calc(100vw - 2 * var(--space-4));
+  padding: var(--space-3) var(--space-4);
+  background: var(--ink); color: var(--page);
+  border-radius: var(--radius-sm);
+  font: var(--type-small);
+  z-index: 10;
+}
+.toast[data-error] { background: var(--red-tint); color: var(--red); border: var(--hairline) solid var(--red); }
+.toast[hidden] { display: none; }

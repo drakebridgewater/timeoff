@@ -1,0 +1,50 @@
+# Time off on Unraid, behind Traefik and Authelia.
+# https://timeoff.bridgewater.digital
+#
+# Point a Dockhand Git stack at this file. GitHub Actions builds the image and
+# publishes it to GHCR, so nothing is compiled on the server. Set the variables
+# from deploy/.env.example before the first deploy.
+#
+# To have Sablier stop it when idle, add docker-compose.sablier.yml to the stack too.
+
+name: timeoff
+
+services:
+  timeoff:
+    container_name: timeoff
+    image: ghcr.io/${GITHUB_OWNER:-drakebridgewater}/timeoff:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    user: "${PUID:-99}:${PGID:-100}"   # Unraid nobody:users
+    environment:
+      TZ: ${TZ:-America/Los_Angeles}
+      # The header shows the Authelia user from the Remote-User header.
+      # Set to false if this container is ever reachable without Authelia in front.
+      TRUST_USER_HEADER: ${TRUST_USER_HEADER:-true}
+      AUTH_URL: ${AUTH_URL:-https://auth.bridgewater.digital}
+    volumes:
+      - ${APPDATA:-/mnt/user/appdata/timeoff}:/data   # timeoff.sqlite: every day off
+    networks:
+      - proxy
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: ${TRAEFIK_NETWORK:-proxy}
+      traefik.http.services.timeoff.loadbalancer.server.port: "3000"
+      traefik.http.routers.timeoff.rule: Host(`${SITE_HOST:-timeoff.bridgewater.digital}`)
+      traefik.http.routers.timeoff.entrypoints: ${TRAEFIK_ENTRYPOINT:-https}
+      traefik.http.routers.timeoff.tls.certresolver: ${TRAEFIK_CERTRESOLVER:-cloudflare}
+      traefik.http.routers.timeoff.middlewares: ${AUTHELIA_MIDDLEWARE:-default-secure@file}
+      traefik.http.routers.timeoff.service: timeoff
+
+      homepage.group: ${HOMEPAGE_GROUP:-Family}
+      homepage.name: Time off
+      homepage.icon: mdi-calendar-check
+      homepage.href: https://${SITE_HOST:-timeoff.bridgewater.digital}
+      homepage.description: Days off and whether they are reported
+
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: https://${SITE_HOST:-timeoff.bridgewater.digital}
+
+networks:
+  proxy:
+    name: ${TRAEFIK_NETWORK:-proxy}
+    external: true
